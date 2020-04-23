@@ -18,7 +18,14 @@ module.exports = {
 
 ## execute
 
-`img-cli start -C img.config.js`
+```
+img-cli start -C img.config.js
+```
+
+默认执行也是可以的
+```
+img-cli start
+```
 
 如果resize图片依然很大，可做如下处理
 
