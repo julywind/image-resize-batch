@@ -4,7 +4,8 @@
   "description": "",
   "main": "bin/img-cli.js",
   "scripts": {
-    "dev": "node bin/img-cli.js"
+    "dev": "node bin/img-cli.js",
+    "test2": "./bin/img-cli.js -S ./ -D ./out -C ./img.config.js"
   },
   "bin": {
     "img-cli": "bin/img-cli.js"

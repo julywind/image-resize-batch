@@ -1,9 +1,9 @@
 const { Image } = require('image-js');
-const assert = require('assert')
+const assert = require('assert');
 // const src = '/Users/marty/imgs/Go for it U1L3/bicycle.jpeg';
 
 const path = require("path");
-const fs = require('fs')
+const fs = require('fs');
 
 function mkdirsSync(dirname) {
     if (fs.existsSync(dirname)) {
@@ -17,12 +17,12 @@ function mkdirsSync(dirname) {
 }
 
 async function handleResize(out, image, size){
-    const dWidth = size.width
-    const dHeight = size.height
+    const dWidth = size.width;
+    const dHeight = size.height;
 
-    const {width,height} = image
+    const {width,height} = image;
 
-    const resize = {}
+    const resize = {};
     if(dWidth/ dHeight > width / height){
         resize.width = dWidth
     }else{
@@ -36,34 +36,34 @@ async function handleResize(out, image, size){
     const x = (grey.width - dWidth)/ 2;
     const y = (grey.height - dHeight)/ 2;
     // .rotate(30); // rotate the image clockwise by 30 degrees.
-    const dir = path.join(path.dirname(out), `${size.namePrefix}-${dWidth}-${dHeight}`)
-    mkdirsSync(dir)
+    const dir = path.join(path.dirname(out), `${size.namePrefix}-${dWidth}-${dHeight}`);
+    mkdirsSync(dir);
 
     await grey.crop({x, y, width: dWidth, height: dHeight}).save(path.join(dir, path.basename(out)));
 
 }
 
 async function processImage(src, out, sizes) {
-    assert.ok(sizes && sizes.length>0, "无效参数")
+    assert.ok(sizes && sizes.length>0, "无效参数");
     const args= sizes;
 
-    assert.ok(typeof src === 'string', "无效src")
-    assert.ok(typeof src === 'string', "无效out")
+    assert.ok(typeof src === 'string', "无效src");
+    assert.ok(typeof src === 'string', "无效out");
 
     assert.ok(args.every(item => item && item.width && item.height),
         `无效尺寸: ${JSON.stringify(args.find(item => !item || !item.width || !item.height))}`);
     let image = await Image.load(src);
-    const tasks = []
+    const tasks = [];
     for(let i=0;i<args.length;i++ ){
-        const task = handleResize(out, image, args[i])
+        const task = handleResize(out, image, args[i]);
         tasks.push(task)
     }
-    await Promise.all(tasks)
+    await Promise.all(tasks);
     console.log('finish handle file:', src)
 }
 
 function isImage(imagePath){
-    const ext = path.extname(imagePath).toLowerCase()
+    const ext = path.extname(imagePath).toLowerCase();
     if(ext==='.png'){
         console.warn('warning', imagePath)
     }
@@ -72,13 +72,13 @@ function isImage(imagePath){
 
 
 async function handleDir(dir, ROOT_PATH, OUT_PATH, sizes){
-    const files = fs.readdirSync(dir)
+    const files = fs.readdirSync(dir);
     for(let i=0; i<files.length;i++){
-        const file = files[i]
+        const file = files[i];
         if(file.startsWith("\.")){
             continue;
         }
-        const filePath = path.join(dir, file)
+        const filePath = path.join(dir, file);
         if (fs.existsSync(filePath)) {
             if(fs.statSync(filePath).isFile()){
                 if(isImage(filePath)){
@@ -86,7 +86,7 @@ async function handleDir(dir, ROOT_PATH, OUT_PATH, sizes){
                     // console.log('handle image:', filePath, 'destDir', path.join(filePath.replace(ROOT_PATH, "")))
                     // console.log('src', (filePath))
 
-                    console.log('out', (filePath.replace(ROOT_PATH, OUT_PATH)))
+                    console.log('out', (filePath.replace(ROOT_PATH, OUT_PATH)));
 
                     await processImage(filePath, filePath.replace(ROOT_PATH, OUT_PATH), sizes).catch(console.error);
                 }
@@ -97,15 +97,15 @@ async function handleDir(dir, ROOT_PATH, OUT_PATH, sizes){
     }
 }
 
-const ROOT_PATH = path.resolve('/Users/marty/imgs/')
-const OUT_PATH = path.resolve('/Users/marty/imgs-out/')
-const sizes = [{width: 670, height:380, namePrefix: '题干'}, {width: 315, height:214, namePrefix: '选项'}]
+// const ROOT_PATH = path.resolve('/Users/marty/imgs/');
+// const OUT_PATH = path.resolve('/Users/marty/imgs-out/');
+// const sizes = [{width: 670, height:380, namePrefix: '题干'}, {width: 315, height:214, namePrefix: '选项'}];
 
-handleDir(ROOT_PATH, ROOT_PATH, OUT_PATH).then(()=>{console.log('finished all tasks')})
+// handleDir(ROOT_PATH, ROOT_PATH, OUT_PATH).then(()=>{console.log('finished all tasks')});
 
 module.exports = (config) => {
-    const ROOT_PATH = path.resolve(config.sourceDir)
-    const OUT_PATH = path.resolve(config.destDir || './out/')
-    const sizes = [{width: 670, height:380, namePrefix: '题干'}, {width: 315, height:214, namePrefix: '选项'}]
+    const ROOT_PATH = path.resolve(config.sourceDir);
+    const OUT_PATH = path.resolve(config.destDir || './out/');
+    const sizes = [{width: 670, height:380, namePrefix: '题干'}, {width: 315, height:214, namePrefix: '选项'}];
     handleDir(ROOT_PATH, ROOT_PATH, OUT_PATH, config.sizes || sizes).then(()=>{console.log('finished all tasks')})
-}
+};
