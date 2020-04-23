@@ -1,15 +1,19 @@
 {
-  "name": "image-press",
+  "name": "image-resize-batch",
   "version": "1.0.0",
   "description": "",
-  "main": "src/resize.js",
+  "main": "bin/img-cli.js",
   "scripts": {
-    "dev": "node src/resize.js"
+    "dev": "node bin/img-cli.js"
+  },
+  "bin": {
+    "img-cli": "bin/img-cli.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "commander": "^5.0.0",
     "gm": "^1.23.1",
     "image-js": "^0.21.9",
     "imagemagick": "^0.1.3",

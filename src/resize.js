@@ -71,7 +71,7 @@ function isImage(imagePath){
 }
 
 
-async function handleDir(dir, ROOT_PATH, OUT_PATH){
+async function handleDir(dir, ROOT_PATH, OUT_PATH, sizes){
     const files = fs.readdirSync(dir)
     for(let i=0; i<files.length;i++){
         const file = files[i]
@@ -91,7 +91,7 @@ async function handleDir(dir, ROOT_PATH, OUT_PATH){
                     await processImage(filePath, filePath.replace(ROOT_PATH, OUT_PATH), sizes).catch(console.error);
                 }
             }else if(fs.statSync(filePath).isDirectory()){
-                await handleDir(filePath, ROOT_PATH, OUT_PATH)
+                await handleDir(filePath, ROOT_PATH, OUT_PATH, sizes)
             }
         }
     }
@@ -102,3 +102,10 @@ const OUT_PATH = path.resolve('/Users/marty/imgs-out/')
 const sizes = [{width: 670, height:380, namePrefix: '题干'}, {width: 315, height:214, namePrefix: '选项'}]
 
 handleDir(ROOT_PATH, ROOT_PATH, OUT_PATH).then(()=>{console.log('finished all tasks')})
+
+module.exports = (config) => {
+    const ROOT_PATH = path.resolve(config.sourceDir)
+    const OUT_PATH = path.resolve(config.destDir || './out/')
+    const sizes = [{width: 670, height:380, namePrefix: '题干'}, {width: 315, height:214, namePrefix: '选项'}]
+    handleDir(ROOT_PATH, ROOT_PATH, OUT_PATH, config.sizes || sizes).then(()=>{console.log('finished all tasks')})
+}
