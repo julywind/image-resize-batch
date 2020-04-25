@@ -44,7 +44,7 @@ async function handleResize(out, image, size){
 }
 
 async function processImage(src, out, sizes) {
-    assert.ok(sizes && sizes.length>0, "无效参数");
+    assert.ok(sizes && sizes.length>0, `无效参数: ${JSON.stringify(sizes)}`);
     const args= sizes;
 
     assert.ok(typeof src === 'string', "无效src");
@@ -72,6 +72,11 @@ function isImage(imagePath){
 
 
 async function handleDir(dir, ROOT_PATH, OUT_PATH, config){
+    if(fs.statSync(dir).isFile()){
+        await processImage(filePath, filePath.replace(ROOT_PATH, OUT_PATH), config.sizes).catch(console.error);
+        console.log('out', (filePath.replace(ROOT_PATH, OUT_PATH)));
+        return
+    }
     const files = fs.readdirSync(dir);
     for(let i=0; i<files.length;i++){
         const file = files[i];
@@ -109,6 +114,6 @@ module.exports = (config) => {
     const ROOT_PATH = path.resolve(config.sourceDir || './');
     const OUT_PATH = path.resolve(config.destDir || './out/');
     const sizes = [{width: 670, height:380, namePrefix: '题干'}, {width: 315, height:214, namePrefix: '选项'}];
-    config.size = config.sizes || sizes
+    config.sizes = config.sizes || sizes
     handleDir(ROOT_PATH, ROOT_PATH, OUT_PATH, config).then(()=>{console.log('finished all tasks')})
 };

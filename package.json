@@ -1,11 +1,11 @@
 {
   "name": "image-resize-batch",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "",
   "main": "bin/img-cli.js",
   "scripts": {
     "dev": "node bin/img-cli.js",
-    "test2": "./bin/img-cli.js -S ./ -D ./out -C ./img.config.js"
+    "test2": "./bin/img-cli.js -S -s /Users/marty/2020-4-24-8年级上 -d ./out -c ./img.config.js"
   },
   "bin": {
     "img-cli": "bin/img-cli.js"
